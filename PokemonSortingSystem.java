@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package pokemontest;
 
@@ -8,42 +8,70 @@ package pokemontest;
  *
  * @author User
  */
-public class PokemonTest {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-        
-        Pokemon moltres = new Pokemon ("Moltres", "Flame", 85.0);
-        Pokemon servine = new Pokemon ("Servine", "Grass", 60.0);
-        Pokemon charmander = new Pokemon ("Charmander", "Flame", 92.0);
-        Pokemon pansage = new Pokemon ("Pansage", "Grass", 55.0);
-        Pokemon araquanid = new Pokemon ("Araquanid", "Water", 74.0);
-        Pokemon flareon = new Pokemon ("Flareon", "Flame", 65.0);
-        Pokemon squirtle = new Pokemon ("Squirtle", "Water", 63.0);
-        Pokemon wooper = new Pokemon ("Wooper", "Water", 42.0);
-        
-        Pokemon[] PokemonList = {moltres, servine, charmander, pansage, araquanid, flareon, squirtle, wooper};
-    
-        PokemonSortingSystem.sortPokemonByStrength(PokemonList);
-        
-        System.out.println("List of Pokemon after Sorting: ");
-        for (Pokemon pokemon : PokemonList) {
-            System.out.println(pokemon.getName());
-        }
-        
-        System.out.println();
-        
-        String opponentName = "Squirtle";
-        String[] winners = PokemonSortingSystem.determineWinner(opponentName, PokemonList);
-        
-        System.out.print("Pokemon effective against " + opponentName + ":");
-        
-        for (String winner : winners) {
-            System.out.print(winner + ", ");
-        }
+
+public class PokemonSortingSystem {
+    // Sorting method using Arrays.sort()
+    public static void sortPokemonByStrength(Pokemon[] pokemonList) {
+        Arrays.sort(pokemonList, (p1, p2) -> Double.compare(p1.getStrength(), p2.getStrength()));
     }
-    
+
+    public static String[] determineWinner(String opponentName, Pokemon[] pokemonList) {
+        double opponentStrength = 0.0;
+        String opponentType = null;
+        int winnerCount = 0;
+
+        // Find opponent's strength and type
+        for (Pokemon pokemon : pokemonList) {
+            if (pokemon.getName().equals(opponentName)) {
+                opponentStrength = pokemon.getStrength();
+                opponentType = pokemon.getType();
+                break;
+            }
+        }
+
+        // Determine winners based on type advantages
+        String[] winners = new String[pokemonList.length];
+        int index = 0;
+
+        for (Pokemon pokemon : pokemonList) {
+            if (!pokemon.getName().equals(opponentName)) { // Exclude the opponent from the comparison
+                double effectivenessFactor = 1.0;
+
+                // Compare types and apply the appropriate effectiveness factor
+                if (pokemon.getType().equals("Flame")) {
+                    if (opponentType.equals("Grass")) {
+                        effectivenessFactor = 5.0/7.0;
+                    } else if (opponentType.equals("Water")) {
+                        effectivenessFactor = 1.4;
+                    }
+                } else if (pokemon.getType().equals("Grass")) {
+                    if (opponentType.equals("Water")) {
+                        effectivenessFactor = 2.0/3.0;
+                    } else if (opponentType.equals("Flame")) {
+                        effectivenessFactor = 1.5;
+                    }
+                } else if (pokemon.getType().equals("Water")) {
+                    if (opponentType.equals("Flame")) {
+                        effectivenessFactor = 0.8;
+                    } else if (opponentType.equals("Grass")) {
+                        effectivenessFactor = 1.25;
+                    }
+                }
+
+                if (opponentStrength * effectivenessFactor < pokemon.getStrength()) {
+                    winners[index++] = pokemon.getName();
+                }
+            }
+        }
+
+        // Create a new array with the correct size
+        String[] trimmedWinners = new String[index];
+        System.arraycopy(winners, 0, trimmedWinners, 0, index);
+
+        return trimmedWinners;
+    }
 }
