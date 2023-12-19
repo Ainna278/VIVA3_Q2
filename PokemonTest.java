@@ -42,7 +42,7 @@ public class PokemonTest {
         System.out.print("Pokemon effective against " + opponentName + ":");
         
         for (String winner : winners) {
-            System.out.print(winner + ", ");
+            System.out.print(winner + " ");
         }
     }
     
