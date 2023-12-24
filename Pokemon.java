@@ -48,8 +48,4 @@ public class Pokemon {
     public void setStrength(double s) {
         strength = s;
     }
-    
-    public String toString() {
-        return "Pokemon{name='" + name + "', type='" + type + "', strength=" + strength + '}';
-    }
 }
